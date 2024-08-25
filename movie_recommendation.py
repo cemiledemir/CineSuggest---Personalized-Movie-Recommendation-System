@@ -59,7 +59,7 @@ st.title('Personalized Movie Recommendation System')
 st.sidebar.title("Your Preferences")
 selected_genres = st.sidebar.multiselect('Select your favorite genres:', ['Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 'Documentary', 'Drama', 'Family', 'Fantasy', 'History', 'Horror', 'Music', 'Mystery', 'Romance', 'Science Fiction', 'War', 'Western'])
 favorite_movies = st.sidebar.text_input('Enter your favorite movies (comma separated):')
-favorite_movies = [movie.strip() for movie in favorite_movies.split(',') if movie.strip()]
+favorite_movies = [movie.strip().lower().replace(" ", "") for movie in favorite_movies.split(',') if movie.strip()]
 
 # TMDB Dataset
 movies_df = pd.read_csv('movies_dataset.csv', quotechar='"')
@@ -82,7 +82,7 @@ else:
             tfidf = TfidfVectorizer(stop_words='english')
             try:
                 tfidf_matrix = tfidf.fit_transform(filtered_df['Overview'].dropna())
-                favorite_movie_overviews = movies_df[movies_df['Title'].str.lower().isin([movie.lower() for movie in favorite_movies])]['Overview'].dropna()
+                favorite_movie_overviews = movies_df[movies_df['Title'].str.lower().replace(" ", "").isin([movie.lower().replace(" ", "") for movie in favorite_movies])]['Overview'].dropna()
 
                 if favorite_movie_overviews.empty:
                     st.warning("None of your favorite movies have overviews in the dataset.")
